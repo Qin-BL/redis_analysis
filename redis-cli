@@ -1,0 +1,37 @@
+redis-cli一般情况下我们只是用来访问redis服务器。其实redis-cli还提供了一些很实用的功能，通过redis --help可以查看所有的功能。下面介绍几个常用的：
+
+1、--scan和--pattern
+用scan命令扫描redis中的key，--pattern选项指定扫描的key的pattern。
+对比keys pattern命令，虽然scan无法一次性返回所有匹配结果，但是可以规避长时间阻塞系统的风险。
+
+redis-cli --scan --pattern 'pre_*'
+2、--bigkeys
+使用scanning方式，对redis整个keyspace进行统计（数据量大时采样），寻找每种数据类型key的最大size(key)和平均size。
+
+redis-cli --bigkeys
+3、--stat
+滚动显示服务器信息（keys、mem、clients、blocked、requests、connections）
+
+redis-cli --stat
+4、-r和-i
+-r 执行某个命令N次
+-i 使用-r 时，设置命令执行间隔时间（单位秒，可以使用小数）
+
+例如每秒查看终端连接数：
+
+redis-cli -r 60 -i 1 info  | grep connected_clients
+5、--rdb
+导出redis数据到本地文件
+
+redis-cli --rdb backup.rdb
+6、--pipe
+发送原始的redis协议格式数据到服务器端执行。做测试时可以用这个命令批量造数据。
+
+cat data.txt | redis-cli --pipe
+7、--eval
+执行lua脚本
+
+redis-cli --eval test.lua key1
+8、--latency 持续采样服务器延迟时间，--latency-history则是持续采集并每隔一段时间（15秒）输出一个记录。
+
+redis-cli --latency-history
